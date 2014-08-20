@@ -1,0 +1,124 @@
+$background-color: #263238;
+$foreground-color: #78909c;
+
+html, body {
+  margin: 0;
+  padding:0;
+  font-size: 14px;
+  font-family: "Helvetica Neue", Helvetica;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+}
+body {
+  background-color: $background-color;
+}
+svg {
+  margin-top:20px;
+}
+#date {
+  position: absolute;
+  top: 10px;
+  left:45%;
+  color: $foreground-color;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+  stroke-width: 2.5px;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.card {
+  color:#13160D;
+}
+
+#key-place-holder {
+  height:40px;
+}
+#key {
+  position: fixed;
+  list-style: none;
+}
+#key li {
+  padding:4px 10px;
+  float: left;
+}
+
+/* colors */
+.product .card, .product-key {
+  background-color: #E6AC27;
+}
+.customer-success .card, .cs .card, .customer-success-key {
+  background-color: #BF4D28;
+}
+.marketing .card, .marketing-key {
+  background-color: #80BCA3;
+}
+.sales .card, .sales-key {
+  background-color: #655643;
+}
+div.card strong {
+  display:block;
+  padding:3px;
+}
+div.card p {
+ margin:0;
+ padding:0 3px 3px 3px;
+}
+svg, svg g {
+  overflow: visible;
+}
+svg circle {
+  fill: #333;
+}
+
+svg  {
+  .follow {
+    circle {
+      fill: green;
+    }
+  }
+
+  .watch {
+    circle {
+      fill: yellow;
+    }
+  }
+
+  .fork {
+    circle {
+      fill: green;
+    }
+  }
+
+  .repos {
+    circle {
+      fill: #ff4081;
+    }
+  }
+
+}
+
+
+text {
+  font-size: 12px;
+  fill: $foreground-color;
+  fill-opacity: 1;
+  &.text-bg {
+    fill : none;
+    stroke: $background-color;
+    strok-opacity: 1;
+    stroke-width: 6;
+    stroke-linejoin: round;
+  }
+}
+
