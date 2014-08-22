@@ -1,6 +1,6 @@
 $background-color: #263238;
-$foreground-color: #78909c;
-
+$foreground-color: #455a64;
+$follow-color: #2baf2b;
 html, body {
   margin: 0;
   padding:0;
@@ -14,13 +14,31 @@ body {
   background-color: $background-color;
 }
 svg {
-  margin-top:20px;
+  width:100%;
+  border-bottom:1px solid #FFF;
+}
+#owner {
+  position: absolute;
+  top: 10px;
+  left: 45%;
+  img {
+    width: 60%;
+    height: auto;
+    border-radius: 50px;
+    border: 1px solid #90a4ae;
+  }
 }
 #date {
   position: absolute;
   top: 10px;
-  left:45%;
+  left: 10px;
+  font-size: 40px;
   color: $foreground-color;
+  span {
+    display: inline-block;
+    width:100px;
+    text-align: center;
+  }
 }
 
 .axis path,
@@ -77,42 +95,30 @@ div.card p {
 svg, svg g {
   overflow: visible;
 }
-svg circle {
-  fill: #333;
-}
-
 svg  {
   .follow {
-    circle {
-      fill: green;
-    }
+    fill: $follow-color;
   }
 
   .watch {
-    circle {
-      fill: yellow;
-    }
+    fill: #ffff00;
   }
 
   .fork {
-    circle {
-      fill: green;
-    }
+    fill: #4527a0;
   }
 
   .repos {
-    circle {
-      fill: #ff4081;
-    }
+    fill: #ff4081;
   }
 
 }
 
 
 text {
-  font-size: 12px;
+  font-size: 10px;
   fill: $foreground-color;
-  fill-opacity: 1;
+
   &.text-bg {
     fill : none;
     stroke: $background-color;
@@ -122,3 +128,16 @@ text {
   }
 }
 
+#repo {
+  fill: #455a64;
+}
+
+
+svg {
+  .owner-wrap {
+    .follow {
+      fill : #5af158;
+      opacity:0.5;
+    }
+  }
+}

@@ -1,23 +1,13 @@
-var width = 1200,
+var App = {},
+    width = 1200,
     height = 600,
     parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse,
     formatDate = d3.time.format("%d %b %Y"),
-    x = d3.time.scale().range([0, width]),
-    y = d3.scale.linear().range([0, height]),
-    xAxis = d3.svg.axis()
-            .scale(x)
-            .tickFormat(d3.time.format("%d %b %Y"))
-            .ticks(d3.time.months)
-            .orient("bottom"),
-    yAxis = d3.svg.axis()
-                .scale(y)
-                .orient("left"),
+    formatDateHTML = d3.time.format("<span>%d</span> <span>%b</span> <span>%Y</span>"),
     svg = d3.select("body")
             .append("svg")
-                .attr("width", width)
-                .attr("height", height)
-                    .append("g")
-                        .attr("transform", "translate(" + 0 + "," + 20 + ")")
+                .attr('viewBox', '0 0 1200 600')
+                .append("g")
     ;
 
 function displayRepos(data, type) {
@@ -29,34 +19,100 @@ function displayRepos(data, type) {
                         .attr("transform", function(d) {
                             return "translate(" + d.x + "," + d.y + ")";
                         })
-
-    nodesEnter.append("svg:circle")
-                    .attr("r", 2)
+    // Pulse highlight
+    nodesEnter
+        .append('svg:circle')
+            .attr('r', 0)
+            .attr('fill', '#2baf2b')
+            .attr('opacity', 0.2)
+            .transition()
+                .duration(1200)
+                .attr('r', 120)
+                .attr('opacity', 0)
+                .remove()
+    ;
+    nodesEnter
+        .append('use')
+            .attr('xlink:href', '#repo')
+            .attr('class', type)
+            .attr('x', -15)
+            .attr('y', -15)
+            .attr('height', 0)
+            .attr('width', 0)
+            .transition()
+                .duration(400)
+                .attr('x', -20)
+                .attr('y', -20)
+                .attr('height', 40)
+                .attr('width', 40)
+            .transition()
+                .duration(400)
+                .attr('x', -15)
+                .attr('y', -15)
+                .attr('height', 30)
+                .attr('width', 30)
     ;
 
-
-    nodesEnter.append("svg:text")
+    var stats = nodesEnter.append('g')
+                    .attr('class', 'data')
+                    .attr('opacity', 0)
+    ;
+    stats
+        .append('use')
+            .attr('xlink:href', '#watch')
+            .attr('x', 25)
+            .attr('y', -15)
+            .attr('height', 12)
+            .attr('width', 12)
+            .attr('fill', '#455a64')
+    ;
+    stats
+        .append('use')
+            .attr('xlink:href', '#fork')
+            .attr('x', 55)
+            .attr('y', -15)
+            .attr('height', 12)
+            .attr('width', 12)
+            .attr('fill', '#455a64')
+    ;
+    stats
+        .append('text')
+            .text('0')
+            .attr('x', 25)
+            .attr('y', 13)
+    ;
+    stats
+        .append('text')
+            .text('0')
+            .attr('x', 55)
+            .attr('y', 13)
+    ;
+    stats.append("svg:text")
             .attr('class', 'text-bg')
-            .attr("dy", 25)
-            .attr("text-anchor", function(d) { return d['text-anchor'] || 'middle' })
-            .text(function(d) { return d.name });
-
-    nodesEnter.append("svg:text")
-        .attr("dy", 25)
-        .attr("text-anchor", function(d) { return d['text-anchor'] || 'middle' })
-        .text(function(d) { return d.name });
-
-
-    nodesEnter.append("svg:text")
+            .attr("dy", 35)
+            .attr("text-anchor", 'middle')
+            .text(function(d) { return d.name })
+    ;
+    stats.append("svg:text")
+        .attr("dy", 35)
+        .attr("text-anchor", 'middle')
+        .text(function(d) { return d.name })
+    ;
+    stats.append("svg:text")
             .attr('class', 'text-bg')
-            .attr("dy", 45)
+            .attr("dy", 50)
             .attr("text-anchor", 'middle')
             .text(function(d) { return d.friendly });
-
-    nodesEnter.append("svg:text")
-        .attr("dy", 45)
+    stats.append("svg:text")
+        .attr("dy", 50)
         .attr("text-anchor", 'middle')
-        .text(function(d) { return d.friendly });
+        .text(function(d) { return d.friendly })
+    ;
+    stats
+        .transition()
+            .delay(400)
+            .duration(800)
+            .attr('opacity', 1)
 
     return nodes;
 }
@@ -67,31 +123,45 @@ function displayRepoData(data, type) {
 
     var nodesEnter = nodes.enter().append("g")
                         .attr('class', type)
-                        .attr("transform", function(d,i) {
-                            return "translate("+ (width/2) +","+ height +")";
+                        .attr("transform", function(d) {
+                            return "translate(" + d.target.x + "," + d.target.y + ")";
                         })
+                        .attr('opacity', 1)
 
-    nodesEnter.append("svg:circle")
-                    .attr("r", 2)
+    var icon = nodesEnter.append('use')
+            .attr('xlink:href', '#' + type)
+            .attr('class', type)
+            .attr('height', 10)
+            .attr('width', 10)
     ;
+    icon
+        .transition()
+            .duration(100)
+            .attr('height', 20)
+            .attr('width', 20)
+        .transition()
+            .duration(700)
+            .attr('height', 10)
+            .attr('width', 10)
 
-    // Transition nodes to their new position.
-    nodes.transition()
-        .duration(1000)
-        .attr("transform", function(d) {
-            return "translate(" + d.x + "," + d.y + ")";
-        });
-
+    nodes
+        .transition()
+            .duration(800)
+            .attr("transform", function(d) {
+                return "translate(" + d.target.x + "," + 0 + ")";
+            })
+            .attr('opacity', 0)
+            .each('end', function(d) {
+                d3.select(this).remove();
+            })
 
     return nodes;
 }
 
 
 
-var url = '/assets/media/follow.csv';
-
-
 var parseDateISO = d3.time.format("%Y-%m-%dT%H:%M:%SZ").parse,
+    parseDayofYear = d3.time.format("%j-%Y").parse,
     dayFormat = d3.time.format('%j'),
     yearFormat = d3.time.format('%Y'),
     friendlyFormat = d3.time.format('%b %Y'),
@@ -119,7 +189,7 @@ function play(callback) {
         ;
 
         callback(counterString);
-        d3Date.text(day + ' ' + yearString);
+        d3Date.html(formatDateHTML(parseDayofYear(day + '-' + yearString)));
 
         counter++;
         day++;
@@ -135,29 +205,27 @@ function play(callback) {
     }, 1);
 }
 
-function parseBigTableDataToDict(data, _repos) {
+function parseBigTableDataToDict(data, target, type) {
     var dict = {};
     data.forEach(function(d,i) {
         d.date = parseDate(d.created_at);
         d.day = dayFormat(d.date);
         d.year = yearFormat(d.date);
         d.friendly = friendlyFormat(d.date);
+        d.type = type;
+        d.target = target(d);
 
-        if(_repos[d.repository_name]) {
-            d.x = _repos[d.repository_name].x;
-            d.y = _repos[d.repository_name].y;
+        var derp = yearSet.indexOf(d.year.toString());
+        derp = parseInt(derp);
+        var day = parseInt(d.day) + (derp*daysInYear);
 
-            var derp = yearSet.indexOf(d.year.toString());
-            derp = parseInt(derp);
-            var day = parseInt(d.day) + (derp*daysInYear);
-
-            if(dict[day.toString()]) {
-                dict[day.toString()].push(d);
-            }
-            else {
-                dict[day.toString()] = [d];
-            }
+        if(dict[day.toString()]) {
+            dict[day.toString()].push(d);
         }
+        else {
+            dict[day.toString()] = [d];
+        }
+
     });
 
     return dict;
@@ -176,8 +244,8 @@ function parseRepos(data) {
         d.day = dayFormat(d.date);
         d.year = yearFormat(d.date);
         d.friendly = friendlyFormat(d.date);
-        d.x = (150*(i%10));
-        d.y = (150*(Math.floor(i/10)));
+        d.x = (175*(i%8)) + 50;
+        d.y = (120*(Math.floor(i/8))) + 100;
 
         var derp = yearSet.indexOf(d.year.toString());
         derp = parseInt(derp);
@@ -197,36 +265,73 @@ function parseRepos(data) {
 }
 
 
+function displayOwner(owner) {
+    var html = '<img src="//www.gravatar.com/avatar/'+ owner.gravatar_id +'">';
+    d3.select('body')
+        .append('div')
+            .attr('id', 'owner')
+            .html(html);
+
+    App.follow = svg.append('g').attr('class', 'owner-wrap')
+                                .attr("transform", "translate(700,50)")
+
+    App.follow
+        .append('g')
+            .attr("transform", "translate(-18,-20)")
+        .append('use')
+            .attr('xlink:href', '#follow')
+            .attr('class', 'follow')
+            .attr('height', 40)
+            .attr('width', 40)
+}
 
 d3.json('https://api.github.com/users/plusjade/repos', function(data) {
     var blah = parseRepos(data),
-        repoDict = blah[0],
-        repos = blah[1]
+        repoDict = blah[0]
     ;
+    displayOwner(data[0].owner);
+    App.owner = data[0].owner;
+    App.repos = blah[1];
+
 
     d3.csv('/assets/media/watch.csv', function(data) {
-        var watchDict = parseBigTableDataToDict(data, repos);
+        var hai = function(d) {
+            var target = { x: 0, y: 0 };
+            if (App.repos[d.repository_name]) {
+                target.x = App.repos[d.repository_name].x + 25;
+                target.y = App.repos[d.repository_name].y - 15;
+            }
+            return  target;
+        };
+
+        var watchDict = parseBigTableDataToDict(data, hai, 'watch');
 
         d3.csv('/assets/media/fork.csv', function(forkData) {
-            var forkDict = parseBigTableDataToDict(data, repos);
+            var forkDict = parseBigTableDataToDict(data, hai, 'fork');
 
+            d3.csv('/assets/media/follow.csv', function(data) {
+                var followDict = parseBigTableDataToDict(data, function(d) { return { x: 720, y: 0 } }, 'follow');
 
+                play(function(counterString) {
+                    if(repoDict[counterString]) {
+                        displayRepos(repoDict[counterString], 'repos');
+                    }
 
-            play(function(counterString) {
-                if(repoDict[counterString]) {
-                    displayRepos(repoDict[counterString], 'repos');
-                }
+                    if(watchDict[counterString]) {
+                        displayRepoData(watchDict[counterString], 'watch');
+                    }
 
-                if(watchDict[counterString]) {
-                    displayRepoData(watchDict[counterString], 'watch');
-                }
+                    if(forkDict[counterString]) {
+                        displayRepoData(forkDict[counterString], 'fork');
+                    }
 
-                if(forkDict[counterString]) {
-                    displayRepoData(forkDict[counterString], 'fork');
-                }
+                    if(followDict[counterString]) {
+                        displayRepoData(followDict[counterString], 'follow');
+                    }
 
-            })
+                })
 
+            });
 
 
         })
