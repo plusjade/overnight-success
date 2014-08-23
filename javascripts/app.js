@@ -202,7 +202,7 @@ function play(callback) {
 
 function parseBigTableDataToDict(data, target, type) {
     var dict = {};
-    data.forEach(function(d,i) {
+    data.forEach(function(d) {
         d.date = parseDate(d.created_at);
         d.day = dayFormat(d.date);
         d.year = yearFormat(d.date);
@@ -289,20 +289,25 @@ d3.json('https://api.github.com/users/plusjade/repos', function(data) {
     App.repos = blah[1];
 
 
-    d3.csv('/assets/media/watch.csv', function(data) {
-        var hai = function(d) {
+    d3.csv('/assets/media/watch.csv', function(watchData) {
+        var watchDict = parseBigTableDataToDict(watchData, function(d) {
             var target = { x: 0, y: 0 };
             if (App.repos[d.repository_name]) {
                 target.x = App.repos[d.repository_name].x + 25;
                 target.y = App.repos[d.repository_name].y - 15;
             }
-            return  target;
-        };
-
-        var watchDict = parseBigTableDataToDict(data, hai, 'watch');
+            return target;
+        }, 'watch');
 
         d3.csv('/assets/media/fork.csv', function(forkData) {
-            var forkDict = parseBigTableDataToDict(data, hai, 'fork');
+            var forkDict = parseBigTableDataToDict(forkData, function(d) {
+                var target = { x: 0, y: 0 };
+                if (App.repos[d.repository_name]) {
+                    target.x = App.repos[d.repository_name].x + 55;
+                    target.y = App.repos[d.repository_name].y - 15;
+                }
+                return target;
+            }, 'fork');
 
             d3.csv('/assets/media/follow.csv', function(data) {
                 var followDict = parseBigTableDataToDict(data, function(d) { return { x: 720, y: 0 } }, 'follow');
