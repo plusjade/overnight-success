@@ -135,8 +135,8 @@ function displayRepoData(data, type) {
         .attr('width', 10)
         .transition()
             .duration(100)
-            .attr('height', 20)
-            .attr('width', 20)
+            .attr('height', 15)
+            .attr('width', 15)
 
 
     nodes
@@ -239,8 +239,8 @@ function parseRepos(data) {
         d.day = dayFormat(d.date);
         d.year = yearFormat(d.date);
         d.friendly = friendlyFormat(d.date);
-        d.x = (175*(i%8)) + 50;
-        d.y = (120*(Math.floor(i/8))) + 100;
+        d.x = (150*(i%6)) + 350;
+        d.y = (100*(Math.floor(i/6))) + 50;
 
         var derp = yearSet.indexOf(d.year.toString());
         derp = parseInt(derp);
@@ -262,30 +262,75 @@ function parseRepos(data) {
 
 function displayOwner(owner) {
     var html = '<img src="//www.gravatar.com/avatar/'+ owner.gravatar_id +'">';
-    d3.select('body')
-        .append('div')
-            .attr('id', 'owner')
-            .html(html);
+    // d3.select('body')
+    //     .append('div')
+    //         .attr('id', 'owner')
+    //         .html(html);
 
     App.follow = svg.append('g').attr('class', 'owner-wrap')
-                                .attr("transform", "translate(700,50)")
+                                .attr("transform", "translate(30,0)")
 
+    // description panel
     App.follow
-        .append('g')
-            .attr("transform", "translate(-18,-20)")
+        .append('rect')
+            .attr('x', -10)
+            .attr('y', 0)
+            .attr('width', 250)
+            .attr('height', 600)
+            .attr('fill', '#111')
+            .attr('fill-opacity', 0.1)
+    ;
+    // avatar background border
+    App.follow
+        .append('rect')
+            .attr('x',0)
+            .attr('y',10)
+            .attr('width', 52)
+            .attr('height', 52)
+            .attr('stroke', '#FFF')
+    ;
+    // avatar
+    App.follow
+        .append('image')
+            .attr('xlink:href', '//www.gravatar.com/avatar/'+ owner.gravatar_id)
+            .attr('x', 1)
+            .attr('y', 11)
+            .attr('height', 50)
+            .attr('width', 50)
+    ;
+    App.follow
         .append('use')
             .attr('xlink:href', '#follow')
             .attr('class', 'follow')
-            .attr('height', 40)
-            .attr('width', 40)
+            .attr('height', 20)
+            .attr('width', 20)
+            .attr('x', 180)
+            .attr('y', 30)
+    ;
+    App.follow
+        .append('text')
+        .attr('x', 60)
+        .attr('y', 30)
+        .text(owner.name)
+    ;
+    App.follow
+        .append('text')
+        .attr('x', 60)
+        .attr('y', 45)
+        .text(owner.location)
+    ;
 }
 
 d3.json('https://api.github.com/users/plusjade/repos', function(data) {
     var blah = parseRepos(data),
         repoDict = blah[0]
     ;
-    displayOwner(data[0].owner);
-    App.owner = data[0].owner;
+
+    d3.json('https://api.github.com/users/plusjade', function(ownerData) {
+        displayOwner(ownerData);
+        App.owner = ownerData;
+    });
+
     App.repos = blah[1];
 
 
@@ -310,8 +355,9 @@ d3.json('https://api.github.com/users/plusjade/repos', function(data) {
             }, 'fork');
 
             d3.csv('/assets/media/follow.csv', function(data) {
-                var followDict = parseBigTableDataToDict(data, function(d) { return { x: 720, y: 0 } }, 'follow');
+                var followDict = parseBigTableDataToDict(data, function(d) { return { x: 210, y: 30 } }, 'follow');
 
+                //return;
                 play(function(counterString) {
                     if(repoDict[counterString]) {
                         displayRepos(repoDict[counterString], 'repos');
