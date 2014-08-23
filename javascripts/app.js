@@ -128,21 +128,16 @@ function displayRepoData(data, type) {
                         })
                         .attr('opacity', 1)
 
-    var icon = nodesEnter.append('use')
-            .attr('xlink:href', '#' + type)
-            .attr('class', type)
-            .attr('height', 10)
-            .attr('width', 10)
-    ;
-    icon
+    nodesEnter.append('use')
+        .attr('xlink:href', '#' + type)
+        .attr('class', type)
+        .attr('height', 10)
+        .attr('width', 10)
         .transition()
             .duration(100)
             .attr('height', 20)
             .attr('width', 20)
-        .transition()
-            .duration(700)
-            .attr('height', 10)
-            .attr('width', 10)
+
 
     nodes
         .transition()
