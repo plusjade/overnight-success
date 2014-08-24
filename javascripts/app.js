@@ -23,7 +23,7 @@ function displayRepos(data, type) {
     nodesEnter
         .append('svg:circle')
             .attr('r', 0)
-            .attr('fill', '#2baf2b')
+            .attr('class', 'pulse-bg')
             .attr('opacity', 0.2)
             .transition()
                 .duration(1200)
@@ -143,7 +143,7 @@ function displayRepoData(data, type) {
         .transition()
             .duration(800)
             .attr("transform", function(d) {
-                return "translate(" + d.target.x + "," + 0 + ")";
+                return "translate(" + d.target.x + "," + (d.target.y - 25) + ")";
             })
             .attr('opacity', 0)
             .each('end', function(d) {
